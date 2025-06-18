@@ -1,0 +1,167 @@
+import { IAirportList, IFlightSearchRequest, IOriginDestinationInformation, IPassengerType, IPassengerTypeQuantity, TFlightClass, TFlightRoute } from "@/types/type.flight";
+import dayjs from "dayjs";
+
+interface FlightSegment {
+  from: string;
+  to: string;
+  date: Date[];
+}
+
+export const parseAirportString = (airportString: string): IAirportList => {
+  const [iata_code, city_name, name] = airportString.split(" - ");
+  return {
+    name: name.trim(),
+    iata_code: iata_code.trim(),
+    city_name: city_name.trim(),
+    country_name: "",
+  };
+};
+export const formatQuerySegments = (fields: FlightSegment[], searchType: TFlightRoute): string => {
+  return fields
+    .map((field) => {
+      const [iataCode, city, airportName] = field?.from.split(" - ") || [];
+      const [iataCodeTo, cityTo, airportNameTo] = field?.to.split(" - ") || [];
+
+      // Encode only the values that might have special characters (like spaces, etc.)
+      const origin = iataCode;  // Don't encode IATA codes
+      const originAirport = encodeURIComponent(airportName); // Encode airport name
+      const originCity = encodeURIComponent(city); // Encode city name
+
+      const destination = iataCodeTo;
+      const destinationAirport = encodeURIComponent(airportNameTo);
+      const destinationCity = encodeURIComponent(cityTo);
+
+      // Construct the segment without re-encoding the entire string
+      const form = `origin=${origin}&originAirport=${originAirport}&originCity=${originCity}&destination=${destination}&destinationAirport=${destinationAirport}&destinationCity=${destinationCity}`;
+
+      const departureDate = dayjs(field.date[0]).format('YYYY-MM-DD');
+      const returnDate = field.date.length > 1 ? `${dayjs(field.date[1]).format('YYYY-MM-DD')}` : '';
+
+      let date;
+      if (searchType === "roundway") {
+        date = `departureDate=${departureDate}&returnDate=${returnDate}`;
+      } else {
+        date = `departureDate=${departureDate}`;
+      }
+
+      // Return the flight segment formatted as a query string
+      return `${form}&${date}`;
+    })
+    .join("__");
+};
+export const decodeQuerySegments = (queryString: string): FlightSegment[] => {
+  const segments = queryString.split('_').filter(segment => segment.trim() !== '');
+
+  const flightSegments = segments.map((segment) => {
+    // Decode the segment before parsing
+    const decodedSegment = decodeURIComponent(segment);
+    const params = new URLSearchParams(decodedSegment);
+    const origin = params.get('origin') || '';
+    const originCity = params.get('originCity') || '';
+    const originAirport = params.get('originAirport') || '';
+    const destination = params.get('destination') || '';
+    const destinationCity = params.get('destinationCity') || '';
+    const destinationAirport = params.get('destinationAirport') || '';
+    const departureDate = params.get('departureDate') || '';
+    const returnDate = params.get('returnDate') || '';
+
+    const from = `${origin} - ${originCity} - ${originAirport}`;
+    const to = `${destination} - ${destinationCity} - ${destinationAirport}`;
+
+    // Convert dates from the query to JavaScript Date objects
+    const dates = returnDate
+      ? [new Date(departureDate!), new Date(returnDate!)]
+      : [new Date(departureDate!)];
+    return {
+      from,
+      to,
+      date: dates,
+    };
+  });
+
+  return flightSegments;
+};
+export const decodeQueryPassengers = (queryString: string) => {
+  const params = new URLSearchParams(queryString);
+  const adult = params.get('adults') || '1';
+  const child = params.get('children') || '0';
+  const kid = params.get('kids') || '0';
+  const infant = params.get('infants') || '0';
+  return {
+    adult: parseInt(adult),
+    child: parseInt(child),
+    kid: parseInt(kid),
+    infant: parseInt(infant),
+  };
+};
+export const flightRequestFormatter = (state: {
+  flightRoute: TFlightRoute;
+  ticketClass: TFlightClass;
+  fields: FlightSegment[];
+  passenger: IPassengerType
+}): IFlightSearchRequest => {
+  const { fields, ticketClass, passenger, flightRoute } = state;
+
+  const originDestinationInformation: IOriginDestinationInformation[] = fields.map((field, index) => ({
+    RPH: (index + 1).toString(),
+    DepartureDateTime: dayjs(field.date[0]).format('YYYY-MM-DDTHH:mm:ss'),
+    OriginLocation: {
+      LocationCode: parseAirportString(field.from).iata_code,
+    },
+    DestinationLocation: {
+      LocationCode: parseAirportString(field.to).iata_code,
+    },
+    TPA_Extensions: {
+      CabinPref: {
+        Cabin: ticketClass,
+        PreferLevel: 'Preferred',
+      },
+    },
+  }));
+
+  if (flightRoute === 'roundway') {
+    const returnTrip = fields.map((field, index) => ({
+      RPH: (fields.length + index + 1).toString(),
+      DepartureDateTime: dayjs(field.date[1]).format('YYYY-MM-DDTHH:mm:ss'),
+      OriginLocation: {
+        LocationCode: parseAirportString(field.to).iata_code,
+      },
+      DestinationLocation: {
+        LocationCode: parseAirportString(field.from).iata_code,
+      },
+      TPA_Extensions: {
+        CabinPref: {
+          Cabin: ticketClass,
+          PreferLevel: 'Preferred',
+        },
+      },
+    }));
+    originDestinationInformation.push(...returnTrip);
+  }
+
+  const passengerTypeQuantity: IPassengerTypeQuantity[] = [
+    {
+      Code: 'ADT',
+      Quantity: passenger.adult,
+    },
+    {
+      Code: 'C11',
+      Quantity: passenger.child,
+    },
+    {
+      Code: 'INF',
+      Quantity: passenger.infant,
+    },
+    {
+      Code: 'C05',
+      Quantity: passenger.kid,
+    },
+  ].filter(ptq => ptq.Quantity > 0);
+
+  return {
+    OriginDestinationInformation: originDestinationInformation,
+    PassengerTypeQuantity: passengerTypeQuantity,
+  };
+};
+
+mae a proper desi to add in this file that a anew devoloprt can understand easyly

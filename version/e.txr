@@ -1,0 +1,193 @@
+import { AccordionTrigger } from "@/components/ui/accordion";
+import { buttonVariants } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
+import { IFlight, IFlightDetail } from "@/types/type.flight";
+import {
+  formatNumber,
+  minutesToHoursAndMinutes,
+  timeSlice,
+} from "@/utils/date-time-formatter";
+import { imageUrl } from "@/utils/image-url";
+import { format, isValid } from "date-fns";
+import Image from "next/image";
+import Link from "next/link";
+
+type InitDetailsProps = {
+  flight: IFlightDetail;
+  data: IFlight;
+  index?: number;
+};
+const InitDetails = ({ flight, data }: InitDetailsProps) => {
+  return (
+    <div className="w-full gap-4 mb-2 md:flex md:gap-8">
+      <div className="flex items-center justify-between md:hidden">
+        <div className="flex items-center gap-2 pt-3 pb-2 ">
+          <Image
+            className="h-auto max-w-24 rounded"
+            src={imageUrl(data?.carrier_logo)}
+            alt="airline_image"
+            width={27}
+            height={27}
+            placeholder="blur"
+            blurDataURL="data:image/webp;base64,UklGRngDAABXRUJQVlA4WAoAAAAgAAAAiAAAiAAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZWUDggigEAAFAPAJ0BKokAiQA+7WaqTq01KKYumKtCoB2JZW7f+jwBwDiCr0Tt0Gy29sF5YFQjh9O84IStpshDU2KUryMR5lpzIBAiBBWUYV1UK62+nXZ5bGX4xxIU+U+cPzN8DXJ07YxMLmVCOhQbWZXrypCNt5B5zz/+7j9NlJxM8xcS//rr8GQAAP7wzJuF/q2WlbU9eOABfO/yU8HX/0qTIkJD2RBqfvUNYhE62jMc981x+r6aKUmeG7cpFHNR85rfxZLNlmO9f8pVl880VBDHUhLtWNgSxZFagJ7RmDGBUhRmCQcCE34Crds2Et5OiI21ogo03hTZNSxolshS+Orsj1u3hBIWhQt3+B9hHvvfOFWjo4K7Mnct5FT9j+/UWUrxzP4RmjIaIa0orxNPUSqpQc9b/HzcBj9cnvEFR4RH4zrXpUJJvLk3fLRp8KpIF8DUzGfLG0/bI2J5dqKKYerl1AAgwwhF67t7xoI1NhrfeH/NzS1Wt/GcvuwQCuDMbqx7QoOaB3dniQ9TdRMAAAA="
+          />
+          <p className="text-xs text-start">{data?.carrier_name}</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <div>
+            <p className="bg-[#06aebd14] mt-3 px-2 py-[2px] text-[9px] text-[#05939f]">
+              {data?.passengers[0].availability[0].segments[0].available_seat}{" "}
+              Seats
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="items-center hidden gap-4 md:flex lg:w-48">
+        <div className="flex items-center justify-center  size-24">
+          <Image
+            className="h-auto max-w-24 rounded"
+            src={imageUrl(data?.carrier_logo)}
+            alt="airline_image"
+            width={27}
+            height={27}
+            placeholder="blur"
+            blurDataURL="data:image/webp;base64,UklGRngDAABXRUJQVlA4WAoAAAAgAAAAiAAAiAAASUNDUMgBAAAAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADZWUDggigEAAFAPAJ0BKokAiQA+7WaqTq01KKYumKtCoB2JZW7f+jwBwDiCr0Tt0Gy29sF5YFQjh9O84IStpshDU2KUryMR5lpzIBAiBBWUYV1UK62+nXZ5bGX4xxIU+U+cPzN8DXJ07YxMLmVCOhQbWZXrypCNt5B5zz/+7j9NlJxM8xcS//rr8GQAAP7wzJuF/q2WlbU9eOABfO/yU8HX/0qTIkJD2RBqfvUNYhE62jMc981x+r6aKUmeG7cpFHNR85rfxZLNlmO9f8pVl880VBDHUhLtWNgSxZFagJ7RmDGBUhRmCQcCE34Crds2Et5OiI21ogo03hTZNSxolshS+Orsj1u3hBIWhQt3+B9hHvvfOFWjo4K7Mnct5FT9j+/UWUrxzP4RmjIaIa0orxNPUSqpQc9b/HzcBj9cnvEFR4RH4zrXpUJJvLk3fLRp8KpIF8DUzGfLG0/bI2J5dqKKYerl1AAgwwhF67t7xoI1NhrfeH/NzS1Wt/GcvuwQCuDMbqx7QoOaB3dniQ9TdRMAAAA="
+          />
+        </div>
+
+        <p className="flex flex-col items-start gap-1">
+          <span className="text-[9px]  md:text-[13px]">
+            {data?.carrier_name}
+          </span>
+        </p>
+      </div>
+
+      <div
+        className={cn(
+          "flex items-center justify-around w-full my-1 p-3 lg:p-0 ",
+          {
+            "gap-4": flight?.options.length > 1,
+            "gap-8": flight?.options.length === 1,
+          }
+        )}
+      >
+        <div>
+          <p className="md:text-[16px] md:font-bold">
+            {flight?.options[0]?.departure?.airport_code}
+            {" - "}
+            {timeSlice(flight?.options[0]?.departure?.time)}
+          </p>
+          <p className="text-xs text-destructive">
+            {format(
+              new Date(flight?.options[0]?.departure?.date),
+              "dd MMM, EEEE"
+            )}
+          </p>
+        </div>
+
+        <div className="text-center">
+          <p className="text-xs">
+            {minutesToHoursAndMinutes(flight?.elapsed_time)?.time}
+          </p>
+
+          <div className="relative my-1 w-full border border-b md:w-[7vw]">
+            <div className="absolute left-[-1px] top-[-3px]  h-[6px] w-[6px] bg-muted block"></div>
+            <div className="absolute right-[-1px] top-[-3px]  h-[6px] w-[6px] bg-muted block"></div>
+          </div>
+
+          <p className="text-xs">{flight?.stoppage + " Stop" || "Nonstop"}</p>
+        </div>
+
+        <div>
+          <p className="md:text-[16px] md:font-bold">
+            {flight?.options[flight?.options.length - 1]?.arrival?.airport_code}
+            {" - "}
+            {timeSlice(
+              flight?.options[flight?.options.length - 1]?.arrival?.time
+            )}
+          </p>
+          <p className="text-xs text-destructive">
+            {isValid(
+              new Date(
+                flight?.options[flight?.options.length - 1]?.arrival.date
+              )
+            )
+              ? format(
+                  new Date(
+                    flight?.options[flight?.options.length - 1]?.arrival.date
+                  ),
+                  "dd MMM, EEEE"
+                )
+              : "Invalid date"}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const FlightCard = ({ data }: { data: IFlight }) => {
+  return (
+    <div className="relative items-center justify-between h-full md:flex bg-[#FAFAFA] mb-2">
+      <div className="absolute left-0 top-[1px] hidden items-center gap-2 md:flex">
+        <div>
+          <p className="bg-[#06aebd14] px-2 py-[2px] text-[9px] text-[#05939f]">
+            {data?.passengers[0].availability[0].segments[0].available_seat}{" "}
+            Seats
+          </p>
+        </div>
+      </div>
+
+      {/* //! dynamic flight details */}
+      <div className="flex flex-col items-center justify-center w-full h-full">
+        {data?.flights.map((flight, _i) => (
+          <InitDetails flight={flight} key={_i} data={data} index={_i} />
+        ))}
+      </div>
+      {/* //! dynamic flight details end*/}
+
+      <div className="relative hidden basis-3/12 md:block ">
+        <div className="w-full md:ps-4">
+          <div className="text-end">
+            <p className="flex items-center justify-end gap-1 text-[18px] font-[600]">
+              <span className="font-mono text-[15px]">৳</span>
+              {formatNumber(data?.fare?.payable)}
+            </p>
+            <p className="mr-2 text-[12px] text-destructive line-through">
+              <span className="font-mono">৳</span>
+              {formatNumber(data?.fare?.total_price)}
+            </p>
+          </div>
+
+          <div className="flex w-full gap-2 items-end">
+            <Tooltip>
+              <TooltipTrigger>
+                <AccordionTrigger className="" />
+              </TooltipTrigger>
+              <TooltipContent>show details</TooltipContent>
+            </Tooltip>
+
+            <Link
+              href={`/flight-revalidate?${data.flight_id}`}
+              className={cn(
+                buttonVariants({ variant: "default", size: "sm" }),
+                "mt-1 h-6 w-full rounded  md:h-7"
+              )}
+            >
+              View <span className="ms-[3px] hidden md:block">Deal</span>
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export { FlightCard };
+
+//

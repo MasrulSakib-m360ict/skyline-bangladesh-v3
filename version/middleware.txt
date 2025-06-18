@@ -1,0 +1,43 @@
+import { jwtDecode } from 'jwt-decode';
+import { cookies } from 'next/headers';
+import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
+
+
+
+const AuthRoutes = ['/login', '/resister', '/recover'];
+const commonPrivateRoutes = ['/dashboard',];
+
+export function middleware(request: NextRequest) {
+  const { pathname, searchParams } = request.nextUrl;
+
+  const accessToken = cookies().get('accessToken')?.value;
+
+  if (!accessToken) {
+    if ((AuthRoutes.includes(pathname)) || AuthRoutes.some((route) => pathname.startsWith(route))) {
+      return NextResponse.next();
+    } else {
+      const callbackUrl = encodeURIComponent(`${pathname}${searchParams ? `?${searchParams}` : ''}`);
+      return NextResponse.redirect(new URL(`/login?callbackUrl=${callbackUrl}`, request.url));
+    }
+  }
+
+  if (
+    accessToken &&
+    (commonPrivateRoutes.includes(pathname) ||
+      commonPrivateRoutes.some((route) => pathname.startsWith(route)))
+  ) {
+    return NextResponse.next();
+  }
+
+  let decodedData = null;
+
+  if (accessToken) {
+    decodedData = jwtDecode(accessToken) as any;
+  }
+  return NextResponse.redirect(new URL('/', request.url));
+}
+
+export const config = {
+  matcher: ['/login', '/resister', '/dashboard/:page*', '/recover/:page*'],
+};
