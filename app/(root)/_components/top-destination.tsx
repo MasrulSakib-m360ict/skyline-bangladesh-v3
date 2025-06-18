@@ -326,21 +326,23 @@ const TopDestination = () => {
             <Link
               href={handleRoute(top)}
               key={top.id}
-              className="bg-white cursor-pointer rounded block  2xl:mr-10 xl:mr-6 mr-3"
+              className="bg-white cursor-pointer rounded block 2xl:mr-10 xl:mr-6 mr-3 group"
               style={{
                 boxShadow: "0px 11px 40px 0px rgba(0, 0, 0, 0.04)",
               }}
             >
               <div>
-                <Image
-                  src={top.img}
-                  alt=""
-                  width={500}
-                  height={500}
-                  className="2xl:h-[360px] xl:h-[208px] h-[220px] 2xl:w-[20vw] xl:w-[20vw] w-[60vw]  rounded object-cover"
-                />
+                <div className="relative w-[60vw] xl:w-[20vw] aspect-[3/2] overflow-hidden rounded">
+                  <Image
+                    src={top.img}
+                    alt=""
+                    fill
+                    className="object-cover rounded transition-transform duration-500 ease-in-out group-hover:scale-110"
+                    sizes="(max-width: 768px) 60vw, 20vw"
+                  />
+                </div>
               </div>
-              <div className="">
+              <div>
                 <h1
                   className={`${Cormorant.className} pb-1 p-4 font-bold md:text-[29px] text-[18px] text-[#1B2B47]`}
                   style={{
@@ -351,7 +353,7 @@ const TopDestination = () => {
                   {top.title}
                 </h1>
                 <hr />
-                <p className="pt-3 md:text-base text-sm pb-5 md:w-[20vw] w-[60vw] p-4 text-[#7A7A7A]">
+                <p className="pt-3 md:text-base text-sm pb-5 md:w-[20vw] w-[60vw] p-4 text-[#7A7A7A] min-h-[78px]">
                   {top.description}
                 </p>
               </div>

@@ -22,10 +22,7 @@ const Tourism = () => {
           </div>
           <div className="w-full px-4 lg:w-1/3">
             <div className="text-center lg:text-right">
-              <Button
-                variant="default"
-                className="rounded-2xl px-6 py-2 text-white bg-primary hover:bg-primary/90 transition"
-              >
+              <Button variant="outline" className="">
                 Explore More
               </Button>
             </div>
