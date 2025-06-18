@@ -274,20 +274,20 @@ const routesData = {
 
 // RouteCard Component
 const RouteCard: React.FC<{ route: Route }> = ({ route }) => (
-  <div key={route.id}>
+  <div key={route.id} className="group">
     <div className="w-full bg-secondaryBg p-0 shadow-xl">
-      <div className="relative 2xl:h-[200px] xl:h-[180px] w-full">
+      <div className="relative 2xl:h-[200px] xl:h-[180px] w-full overflow-hidden">
         <Image
           src={route.img}
           alt="route-image"
           fill
-          className=" object-cover"
+          className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-110"
         />
       </div>
       <div className="px-4 py-5">
         <div className="relative grid grid-cols-2 gap-8">
           <div>
-            <p className="my-1 text-xs text-primary font-bold xl:text-sm  ">
+            <p className="my-1 text-xs text-primary font-bold xl:text-sm">
               {route.from.city}
             </p>
             <p className="mt-[2px] truncate text-sm text-secondary">
@@ -374,13 +374,13 @@ const PopularRoute: React.FC = () => {
           <TabsList className="flex items-center justify-center gap-2 rounded-lg bg-inherit">
             <TabsTrigger
               value="domestic"
-              className="px-8 py-2.5 text-sm leading-5 font-medium rounded-lg"
+              className="px-8 py-2.5 text-sm leading-5 font-medium rounded-lg transition-all duration-500 ease-in-out hover:bg-primary/10 data-[state=active]:bg-primary data-[state=active]:text-white"
             >
               Domestic
             </TabsTrigger>
             <TabsTrigger
               value="international"
-              className="px-8 py-2.5 text-sm leading-5 font-medium rounded-lg"
+              className="px-8 py-2.5 text-sm leading-5 font-medium rounded-lg transition-all duration-500 ease-in-out hover:bg-primary/10 data-[state=active]:bg-primary data-[state=active]:text-white"
             >
               International
             </TabsTrigger>

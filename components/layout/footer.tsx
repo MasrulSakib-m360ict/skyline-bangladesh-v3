@@ -51,11 +51,9 @@ export default function Footer() {
 
   return (
     <div
-      className="bg-secondary"
+      className="bg-secondary bg-cover bg-top w-full"
       style={{
-        // backgroundImage: "url(/images/bg/bottom-shape.webp)",
-        backgroundPosition: "bottom center",
-        backgroundRepeat: "no-repeat",
+        backgroundImage: "url(/images/footer/footer-background-image-1.jpg)",
       }}
     >
       <Container className="pt-8 text-white">
@@ -74,9 +72,9 @@ export default function Footer() {
                 height={500}
                 width={900}
               />
-              {/* <div className="text-white">
+              <div className="text-white">
                 <h2 className="text-2xl font-bold">{siteInfo.name}</h2>
-              </div> */}
+              </div>
             </Link>
             <div>
               <div className="mt-4 flex flex-col gap-2">
@@ -202,14 +200,14 @@ export default function Footer() {
         <div className="flex flex-col justify-between pt-6 md:pb-5 pb-8  sm:flex-row ">
           <div className="flex md:justify-start justify-between md:border-0 md:pb-0 pb-4">
             <div className="relative md:pe-4 pt-[2px]">
-              <a href="/terms" className="text-sm  text-[13px]">
+              <a href="/terms" className="text-sm text-[13px]">
                 Terms & Conditions
               </a>
               <div className="absolute hidden md:block w-[1px] h-[25px] bg-gray-100 right-0 top-0 transform -rotate-180 "></div>
             </div>
 
             <div className="relative md:px-4 pt-[2px]">
-              <Link href="/privacy" className="text-sm  text-[13px]">
+              <Link href="/privacy" className="text-sm text-[13px]">
                 Privacy Policy
               </Link>
               <div className="absolute hidden md:block w-[1px] h-[25px] bg-gray-100 right-0 top-0 transform -rotate-180 "></div>
@@ -222,7 +220,7 @@ export default function Footer() {
               {siteInfo.name}
             </a>
             . All rights reserved
-            <span className="text-[14px]  md:mt-0   mt-4 text-center">
+            <span className="text-[14px] md:mt-0 mt-4 text-center">
               Designed and Developed by{" "}
               <Link className="" target="_blank" href={"https://m360ict.com/"}>
                 M360ICT
