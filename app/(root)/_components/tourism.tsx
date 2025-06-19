@@ -23,7 +23,11 @@ const Tourism = () => {
             </div>
             <div className="w-full px-4 lg:w-1/3">
               <div className="text-center lg:text-right">
-                <Button variant="outline" className="">
+                <Button
+                  variant={"secondary"}
+                  type="submit"
+                  className="search-button lg:mt-0"
+                >
                   Explore More
                 </Button>
               </div>

@@ -71,7 +71,7 @@ const FAQAccordion: React.FC = () => {
             className="bg-white rounded-lg shadow-md overflow-hidden"
           >
             <button
-              className="w-full flex justify-between items-center px-6 py-4 text-left focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-t-lg transition-colors duration-200 hover:bg-gray-50"
+              className="w-full flex justify-between items-center px-6 py-4 text-left focus:outline-none focus:ring-blue-500 rounded-t-lg transition-colors duration-200 hover:bg-gray-50"
               onClick={() => toggleAccordion(index)}
               aria-expanded={openIndex === index ? "true" : "false"}
             >
