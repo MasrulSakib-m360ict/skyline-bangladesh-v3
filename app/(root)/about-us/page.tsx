@@ -11,29 +11,12 @@ export const metadata: Metadata = {
   description: `Learn about ${siteInfo.name} and how we provide travel and lifestyle solutions to our users.`,
 };
 
-// const teamMembers = [
-//   {
-//     name: "Saud All Mizan",
-//     role: "(Co-Founder) CEO",
-//     image: "/images/about-us/M.png",
-//   },
-//   {
-//     name: "Md. Fahim Foysal",
-//     role: "(Co-Founder) COO",
-//     image: "/images/about-us/M1.jpg",
-//   },
-//   {
-//     name: "Noshin Islam",
-//     role: "Head of Sales",
-//     image: "/images/about-us/M2.jpg",
-//   },
-// ];
 export default function AboutUs() {
   return (
     <section className="bg-white text-gray-800">
       {/* Hero Section */}
       <div className="header">
-        <Container className="h-60 flex items-end justify-start">
+        <Container className="h-60 xl:h-96 flex items-end justify-start">
           <div className="h-20">
             <h1 className="text-4xl font-semibold text-white">About Us</h1>
           </div>
@@ -42,27 +25,6 @@ export default function AboutUs() {
       <div className="overflow-hidden w-full relative">
         <Grid size={35} />
         <Container className="py-16 ">
-          {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            {teamMembers.map((member, index) => (
-              <div
-                key={index}
-                className="bg-white backdrop-blur-lg rounded-lg shadow-lg overflow-hidden"
-              >
-                <Image
-                  width={300}
-                  height={200}
-                  src={member.image}
-                  alt={member.name}
-                  className="w-full h-56 object-cover"
-                />
-                <div className="p-4">
-                  <h2 className="text-xl font-semibold">{member.name}</h2>
-                  <p className="text-gray-500">{member.role}</p>
-                </div>
-              </div>
-            ))}
-          </div> */}
-
           <div className="">
             <h2 className="text-4xl font-bold text-gray-800 mb-10">
               Your Trusted Partner for Travel and Lifestyle Solutions

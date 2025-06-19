@@ -481,7 +481,7 @@ const FlightSearch = ({
             type="submit"
             className="search-button lg:mt-0"
           >
-            Search Flights
+            Search Flight
           </Button>
         </div>
       </form>
