@@ -68,19 +68,29 @@ const FAQAccordion: React.FC = () => {
         {faqData.map((faq, index) => (
           <div
             key={index}
-            className="bg-white rounded-lg shadow-md overflow-hidden"
+            className="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-200 hover:shadow-lg"
           >
             <button
-              className="w-full flex justify-between items-center px-6 py-4 text-left focus:outline-none focus:ring-blue-500 rounded-t-lg transition-colors duration-200 hover:bg-gray-50"
+              className={`w-full flex justify-between items-center px-6 py-4 text-left focus:outline-none rounded-t-lg transition-all duration-300 hover:bg-secondary group ${
+                openIndex === index ? "bg-secondary" : ""
+              }`}
               onClick={() => toggleAccordion(index)}
-              aria-expanded={openIndex === index ? "true" : "false"}
+              aria-expanded={openIndex === index}
             >
-              <span className="text-base sm:text-lg lg:text-xl font-semibold text-gray-800">
+              <span
+                className={`text-base sm:text-lg lg:text-xl font-semibold transition-colors duration-200 ${
+                  openIndex === index || openIndex === index
+                    ? "text-white"
+                    : "text-gray-800 group-hover:text-white"
+                }`}
+              >
                 {faq.question}
               </span>
               <svg
-                className={`w-6 h-6 text-blue-600 transition-transform duration-300 ${
-                  openIndex === index ? "rotate-180" : ""
+                className={`w-6 h-6 transition-all duration-300 ${
+                  openIndex === index
+                    ? "text-white rotate-180"
+                    : "text-secondary/70 group-hover:text-white"
                 }`}
                 fill="none"
                 stroke="currentColor"
@@ -96,14 +106,12 @@ const FAQAccordion: React.FC = () => {
               </svg>
             </button>
             <div
-              className={`
-                transition-all duration-300 ease-in-out
-                ${
-                  openIndex === index
-                    ? "max-h-[500px] opacity-100 py-4 px-6"
-                    : "max-h-0 opacity-0 px-6 pointer-events-none"
-                }
-              `}
+              className={`transition-all duration-300 ease-in-out overflow-hidden ${
+                openIndex === index
+                  ? "max-h-[500px] opacity-100 py-4 px-6"
+                  : "max-h-0 opacity-0 px-6"
+              }`}
+              aria-hidden={openIndex !== index}
             >
               <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
                 {faq.answer}

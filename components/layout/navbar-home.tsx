@@ -57,11 +57,11 @@ const Navbar = ({
               className="flex items-center justify-center rounded-sm text-primary-foreground"
             >
               <Image
-                className="h-32 w-full py-1"
+                className="h-[80px] w-full py-2"
                 src={siteInfo.logo}
                 alt={siteInfo.name}
-                height={400}
-                width={900}
+                height={794}
+                width={1250}
               />
             </Link>
             {/* Mobile menu button */}
