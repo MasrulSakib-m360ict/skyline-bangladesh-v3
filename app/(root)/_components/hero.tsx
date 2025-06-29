@@ -36,7 +36,7 @@ const Hero = () => {
   return (
     <div className="bg-cover bg-center bg-[url('/images/pexels-austin-zhang-925030-2441844.jpg')]  relative min-h-[75vh] flex items-center">
       <Container className="relative z-10 ">
-        <div className=" mt-28 md:mt-16">
+        <div className=" mt-28 md:mt-16 mb-12 md:mb-0">
           <Tabs
             value={activeTab}
             onValueChange={handleTabClick}
