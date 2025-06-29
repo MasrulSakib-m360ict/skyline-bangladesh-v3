@@ -1,17 +1,10 @@
-import React, { useState } from "react";
-
-interface ContainerProps {
-  children: React.ReactNode;
-  className?: string;
-}
-
-const Container: React.FC<ContainerProps> = ({ children, className }) => {
-  return (
-    <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${className}`}>
-      {children}
-    </div>
-  );
-};
+import React from "react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 interface FAQItem {
   question: string;
@@ -19,12 +12,6 @@ interface FAQItem {
 }
 
 const FAQAccordion: React.FC = () => {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
-
-  const toggleAccordion = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
-
   const faqData: FAQItem[] = [
     {
       question: "How do I check-in for my flight?",
@@ -54,7 +41,7 @@ const FAQAccordion: React.FC = () => {
   ];
 
   return (
-    <Container className="py-16 md:py-24">
+    <div className="py-16 md:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
       <div className="text-center mb-12">
         <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-4">
           Frequently Asked Questions
@@ -65,62 +52,35 @@ const FAQAccordion: React.FC = () => {
       </div>
 
       <div className="max-w-3xl mx-auto space-y-4">
-        {faqData.map((faq, index) => (
-          <div
-            key={index}
-            className="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-200 hover:shadow-lg"
-          >
-            <button
-              className={`w-full flex justify-between items-center px-6 py-4 text-left focus:outline-none rounded-t-lg transition-all duration-300 hover:bg-secondary group ${
-                openIndex === index ? "bg-secondary" : ""
-              }`}
-              onClick={() => toggleAccordion(index)}
-              aria-expanded={openIndex === index}
+        <Accordion type="single" collapsible className="space-y-4">
+          {faqData.map((faq, index) => (
+            <AccordionItem
+              key={index}
+              value={`item-${index}`}
+              className="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-200 hover:shadow-lg"
             >
-              <span
-                className={`text-base sm:text-lg lg:text-xl font-semibold transition-colors duration-200 ${
-                  openIndex === index || openIndex === index
-                    ? "text-white"
-                    : "text-gray-800 group-hover:text-white"
-                }`}
+              <AccordionTrigger
+                className={`w-full flex justify-between items-center px-6 py-4 text-left focus:outline-none rounded-t-lg transition-all duration-300 hover:bg-secondary group data-[state=open]:bg-secondary hover:no-underline`}
               >
-                {faq.question}
-              </span>
-              <svg
-                className={`w-6 h-6 transition-all duration-300 ${
-                  openIndex === index
-                    ? "text-white rotate-180"
-                    : "text-secondary/70 group-hover:text-white"
-                }`}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M19 9l-7 7-7-7"
-                ></path>
-              </svg>
-            </button>
-            <div
-              className={`transition-all duration-300 ease-in-out overflow-hidden ${
-                openIndex === index
-                  ? "max-h-[500px] opacity-100 py-4 px-6"
-                  : "max-h-0 opacity-0 px-6"
-              }`}
-              aria-hidden={openIndex !== index}
-            >
-              <p className="text-sm sm:text-base text-gray-700 leading-relaxed">
+                <span className="text-base sm:text-lg lg:text-xl font-semibold transition-colors duration-200 group-data-[state=open]:text-white text-gray-800 group-hover:text-white">
+                  {faq.question}
+                </span>
+                <svg
+                  className="w-6 h-6 transition-all duration-300 text-secondary/70 group-hover:text-white group-data-[state=open]:text-white group-data-[state=open]:rotate-180"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                ></svg>
+              </AccordionTrigger>
+              <AccordionContent className="transition-all duration-300 ease-in-out overflow-hidden px-6 py-4 text-sm sm:text-base text-gray-700 leading-relaxed">
                 {faq.answer}
-              </p>
-            </div>
-          </div>
-        ))}
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
       </div>
-    </Container>
+    </div>
   );
 };
 
